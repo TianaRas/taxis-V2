@@ -1,0 +1,7 @@
+target/ 
+data/ 
+.settings/ 
+.classpath 
+.projet 
+*.log 
+.maven-repository/ 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head th:replace="~{layout :: head}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <nav th:replace="~{layout :: nav}"></nav>
+      <div class="content">
+        <header th:replace="~{layout :: header}"></header>
+        <main>
+          <div th:replace="~{layout :: notices}"></div>
+          <h1>
+            Courses 
+            <span th:text="'#' + ${record.id}"></span>
+          </h1>
+          <a sec:authorize="hasAnyRole('ADMIN','MANAGER')" th:href="@{/rides/{id}/edit(id=${record.id})}">Modifier</a>
+          <a th:href="@{/rides}">Retour</a>
+          <table>
+            <tr><th>Client</th><td th:text="${record.clientId != null ? record.clientId : '—'}"></td></tr>
+            <tr><th>Départ</th><td th:text="${record.departure != null ? record.departure : '—'}"></td></tr>
+            <tr><th>Destination</th><td th:text="${record.destination != null ? record.destination : '—'}"></td></tr>
+            <tr><th>Distance (km)</th><td th:text="${record.distance != null ? record.distance : '—'}"></td></tr>
+            <tr><th>Date et heure</th><td th:text="${record.scheduledAt != null ? record.scheduledAt : '—'}"></td></tr>
+            <tr><th>Passagers</th><td th:text="${record.passengers != null ? record.passengers : '—'}"></td></tr>
+            <tr><th>Tarif</th><td th:text="${record.fare != null ? record.fare : '—'}"></td></tr>
+            <tr><th>Chauffeur</th><td th:text="${record.driverId != null ? record.driverId : '—'}"></td></tr>
+            <tr><th>Véhicule</th><td th:text="${record.vehicleId != null ? record.vehicleId : '—'}"></td></tr>
+            <tr><th>Statut</th><td th:text="${record.status != null ? record.status : '—'}"></td></tr>
+            <tr><th>Début réel</th><td th:text="${record.startedAt != null ? record.startedAt : '—'}"></td></tr>
+            <tr><th>Fin réelle</th><td th:text="${record.completedAt != null ? record.completedAt : '—'}"></td></tr>
+          </table>
+          <div sec:authorize="hasAnyRole('ADMIN','MANAGER','OPERATOR')">
+            <form th:if="${record.status == 'EN_ATTENTE'}" method="post" th:action="@{/rides/{id}/actions/assign(id=${record.id})}">
+              <h3>Attribuer</h3>
+              <button>Attribuer</button>
+            </form>
+            <form th:if="${record.status == 'ASSIGNEE'}" method="post" th:action="@{/rides/{id}/actions/start(id=${record.id})}">
+              <h3>Démarrer</h3>
+              <button>Démarrer</button>
+            </form>
+            <form th:if="${record.status == 'EN_COURS'}" method="post" th:action="@{/rides/{id}/actions/complete(id=${record.id})}">
+              <h3>Terminer</h3>
+              <button>Terminer</button>
+            </form>
+            <form th:if="${record.status != 'TERMINEE' and record.status != 'ANNULEE'}" method="post" th:action="@{/rides/{id}/actions/cancel(id=${record.id})}">
+              <h3>Annuler</h3>
+              <button>Annuler</button>
+            </form>
+          </div>
+          <h2>Historique</h2>
+          <ul>
+            <li th:each="e : ${audit}">
+              <strong th:text="${e.action}"></strong>
+              <span th:text="${e.actor + ' · ' + #temporals.format(e.occurredAt,'dd/MM/yyyy HH:mm')}"></span>
+            </li>
+          </ul>
+          <form sec:authorize="hasAnyRole('ADMIN','MANAGER')" method="post" th:action="@{/rides/{id}/delete(id=${record.id})}" onsubmit="return confirm('Supprimer cet enregistrement ?')">
+            <button>Supprimer</button>
+          </form>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

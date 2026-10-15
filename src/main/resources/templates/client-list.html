@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head th:replace="~{layout :: head}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <nav th:replace="~{layout :: nav}"></nav>
+      <div class="content">
+        <header th:replace="~{layout :: header}"></header>
+        <main>
+          <div th:replace="~{layout :: notices}"></div>
+          <h1>Clients</h1>
+          <a sec:authorize="hasAnyRole('ADMIN','MANAGER','OPERATOR')" th:href="@{/clients/new}">Ajouter</a>
+          <form method="get">
+            ... (ton contenu inchangé) ...
+          </form>
+          <table>
+            ... (ton contenu inchangé) ...
+          </table>
+          <span th:text="${page.totalElements} + ' enregistrement(s)'"></span>
+          ... pagination inchangée ...
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

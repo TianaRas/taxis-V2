@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — Taxis V2</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-page">
+
+<main class="login-card">
+  <div class="login-card__brand">
+    <span class="login-card__logo"><i class="bi bi-taxi-front-fill"></i></span>
+    <h1 class="login-card__title">Taxis V2</h1>
+    <p class="login-card__subtitle">Connectez-vous pour accéder au tableau de bord</p>
+  </div>
+
+  <div class="login-card__error" th:if="${param.error}">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span>Identifiants incorrects</span>
+  </div>
+  <div class="login-card__info" th:if="${param.logout}">
+    <i class="bi bi-check-circle-fill"></i>
+    <span>Déconnexion effectuée</span>
+  </div>
+
+  <form method="post" th:action="@{/login}">
+    <label>
+      <span class="label-text">Identifiant</span>
+      <input name="username" autocomplete="username" required autofocus placeholder="ex : admin">
+    </label>
+    <label>
+      <span class="label-text">Mot de passe</span>
+      <input name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+    </label>
+    <button type="submit" class="btn-primary">
+      <i class="bi bi-box-arrow-in-right"></i>
+      Se connecter
+    </button>
+  </form>
+
+  <div class="login-card__footer">Taxis V2 · v2.0.0</div>
+</main>
+
+</body>
+</html>

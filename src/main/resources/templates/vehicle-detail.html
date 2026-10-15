@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head th:replace="~{layout :: head}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <nav th:replace="~{layout :: nav}"></nav>
+      <div class="content">
+        <header th:replace="~{layout :: header}"></header>
+        <main>
+          <div th:replace="~{layout :: notices}"></div>
+          <h1>
+            Véhicules 
+            <span th:text="'#' + ${record.id}"></span>
+          </h1>
+          <a sec:authorize="hasAnyRole('ADMIN','MANAGER')" th:href="@{/vehicles/{id}/edit(id=${record.id})}">Modifier</a>
+          <a th:href="@{/vehicles}">Retour</a>
+          <table>
+            <tr>
+              <th>Immatriculation</th>
+              <td th:text="${record.plate != null ? record.plate : '—'}"></td>
+            </tr>
+            <tr>
+              <th>Marque</th>
+              <td th:text="${record.brand != null ? record.brand : '—'}"></td>
+            </tr>
+            <tr>
+              <th>Modèle</th>
+              <td th:text="${record.model != null ? record.model : '—'}"></td>
+            </tr>
+            <tr>
+              <th>Année</th>
+              <td th:text="${record.year != null ? record.year : '—'}"></td>
+            </tr>
+            <tr>
+              <th>Places</th>
+              <td th:text="${record.capacity != null ? record.capacity : '—'}"></td>
+            </tr>
+            <tr>
+              <th>Kilométrage</th>
+              <td th:text="${record.mileage != null ? record.mileage : '—'}"></td>
+            </tr>
+            <tr>
+              <th>Statut</th>
+              <td th:text="${record.status != null ? record.status : '—'}"></td>
+            </tr>
+          </table>
+          <h2>Historique</h2>
+          <ul>
+            <li th:each="e : ${audit}">
+              <strong th:text="${e.action}"></strong>
+              <span th:text="${e.actor + ' · ' + #temporals.format(e.occurredAt,'dd/MM/yyyy HH:mm')}"></span>
+            </li>
+          </ul>
+          <form sec:authorize="hasAnyRole('ADMIN','MANAGER')" method="post" th:action="@{/vehicles/{id}/delete(id=${record.id})}" onsubmit="return confirm('Supprimer cet enregistrement ?')">
+            <button>Supprimer</button>
+          </form>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

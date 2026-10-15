@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head th:replace="~{layout :: head}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <nav th:replace="~{layout :: nav}"></nav>
+      <div class="content">
+        <header th:replace="~{layout :: header}"></header>
+        <main>
+          <div th:replace="~{layout :: notices}"></div>
+          <h1>Chauffeurs</h1>
+          <a sec:authorize="hasAnyRole('ADMIN','MANAGER','OPERATOR')" th:href="@{/drivers/new}">Ajouter</a>
+          <form method="get">
+            <label>
+              Recherche
+              <input name="q" placeholder="Rechercher" th:value="${q}">
+            </label>
+            <label>
+              Statut
+              <select name="status">
+                <option value="">Tous</option>
+                <option value="EN_COURSE" th:selected="${status == 'EN_COURSE'}">En course</option>
+                <option value="DISPONIBLE" th:selected="${status == 'DISPONIBLE'}">Disponible</option>
+                <option value="EN_PAUSE" th:selected="${status == 'EN_PAUSE'}">En pause</option>
+                <option value="INDISPONIBLE" th:selected="${status == 'INDISPONIBLE'}">Indisponible</option>
+                <option value="SUSPENDU" th:selected="${status == 'SUSPENDU'}">Suspendu</option>
+              </select>
+            </label>
+            <label>
+              Véhicule
+              <select name="filter">
+                <option value="">Tous</option>
+                <option th:each="choice : ${vehicleIdChoices}" th:value="'vehicleId:' + ${choice.id}" th:selected="${filter == 'vehicleId:' + choice.id}" th:text="${choice.plate}"></option>
+              </select>
+            </label>
+            <label>
+              Tri
+              <select name="sort">
+                <option value="id,desc">Plus récents</option>
+                <option value="id,asc">Plus anciens</option>
+                <option value="name,asc">Nom</option>
+              </select>
+            </label>
+            <button>Filtrer</button>
+            <a th:href="@{/drivers}">Effacer</a>
+          </form>
+          <table>
+            <thead>
+              <tr>
+                <th>N°</th>
+                <th>Nom</th>
+                <th>Téléphone</th>
+                <th>Permis</th>
+                <th>Validité permis</th>
+                <th>Embauche</th>
+                <th>Véhicule</th>
+                <th>Statut</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="row : ${page.content}">
+                <td th:text="${row.id}"></td>
+                <td><span th:text="${row.name}"></span></td>
+                <td><span th:text="${row.phone}"></span></td>
+                <td><span th:text="${row.licenseNumber}"></span></td>
+                <td><span th:text="${row.licenseExpiry}"></span></td>
+                <td><span th:text="${row.hiredAt}"></span></td>
+                <td><span th:text="${row.vehicleId}"></span></td>
+                <td><span th:text="${row.status}"></span></td>
+                <td><a th:href="@{/drivers/{id}(id=${row.id})}">Ouvrir</a></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(page.content)}">
+                <td colspan="20">Aucun enregistrement</td>
+              </tr>
+            </tbody>
+          </table>
+          <span th:text="${page.totalElements} + ' enregistrement(s)'"></span>
+          <a th:if="${page.number > 0}" th:href="@{/drivers(page=${page.number - 1},q=${q},status=${status},filter=${filter},sort=${param.sort})}">Précédent</a>
+          <span th:text="${page.number + 1} + ' / ' + ${T(java.lang.Math).max(1,page.totalPages)}"></span>
+          <a th:if="${page.number + 1 < page.totalPages}" th:href="@{/drivers(page=${page.number + 1},q=${q},status=${status},filter=${filter},sort=${param.sort})}">Suivant</a>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
